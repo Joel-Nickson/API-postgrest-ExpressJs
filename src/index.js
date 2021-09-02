@@ -31,6 +31,18 @@ async function setUsers(query) {
     }
 }
 
+app.get('/', async (req, res) => {
+    res.status(200).send(`
+    <ul>
+    <li><span>get '/api'</span></li>
+    <li><span>get '/api/[id]'</span></li>
+    <li><span>post '/api'</span></li>
+    <li><span>put '/api/[id]'</span></li>
+    <li><span>delete '/api/[id]'</span></li>
+    </ul>`
+    );
+});
+
 app.get('/api', async (req, res) => {
     query = 'SELECT * FROM usertable;';
     const users = await getAllUsers(query);
