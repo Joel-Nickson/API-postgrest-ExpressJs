@@ -1,4 +1,5 @@
 const express = require('express');
+var cors = require('cors');
 const app = express();
 const dotenv = require("dotenv");
 const { Pool } = require('pg');
@@ -8,6 +9,7 @@ const url = process.env.DATABASE_URL
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
+app.use(cors());
 
 let query = 'SELECT * FROM usertable;';
 const pool = new Pool({connectionString:url, ssl:true})
@@ -46,7 +48,7 @@ app.get('/', async (req, res) => {
 app.get('/api', async (req, res) => {
     query = 'SELECT * FROM usertable;';
     const users = await getAllUsers(query);
-    console.log(users); // returns all users fine
+    // console.log(users); // returns all users fine
     res.status(200).send(users);
 });
 
@@ -54,7 +56,7 @@ app.get('/api/:id', async (req, res) => {
     const id = req.params.id;
     query = `SELECT * FROM usertable WHERE id=${id};`;
     const users = await getAllUsers(query);
-    console.log(users); // returns all users fine
+    // console.log(users); // returns all users fine
     res.status(200).send(users);
 });
 
