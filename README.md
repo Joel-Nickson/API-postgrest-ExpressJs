@@ -7,4 +7,9 @@ DATABASE_NAME = <Your db name>
 U_NAME = <your username>
 P_WORD = <password>
 PORT = <port no>
+
+TABLE_NAME = <table name>
+COL0 = <col0 or id>
+COL1 = <col1>
+COL2 = <col2>
 ```
