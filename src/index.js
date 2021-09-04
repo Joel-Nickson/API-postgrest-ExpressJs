@@ -11,7 +11,11 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cors());
 
-let query = 'SELECT * FROM usertable;';
+let query = '', 
+    table = process.env.TABLE_NAME,
+    col_unique = process.env.COL0,
+    col1 = process.env.COL1,
+    col2 = process.env.COL2;
 const pool = new Pool({connectionString:url, ssl:true})
 
 async function getAllUsers(query) {
@@ -46,7 +50,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/api', async (req, res) => {
-    query = 'SELECT * FROM usertable;';
+    query = `SELECT * FROM ${table};`;
     const users = await getAllUsers(query);
     // console.log(users); // returns all users fine
     res.status(200).send(users);
@@ -54,7 +58,7 @@ app.get('/api', async (req, res) => {
 
 app.get('/api/:id', async (req, res) => {
     const id = req.params.id;
-    query = `SELECT * FROM usertable WHERE id=${id};`;
+    query = `SELECT * FROM ${table} WHERE ${col_unique}=${id};`;
     const users = await getAllUsers(query);
     // console.log(users); // returns all users fine
     res.status(200).send(users);
@@ -63,7 +67,7 @@ app.get('/api/:id', async (req, res) => {
 app.post('/api', async (req, res) => {
     const {name, pass} = req.body;
 
-    query = `INSERT INTO usertable(name, pass) VALUES( '${name}', '${pass}' );`
+    query = `INSERT INTO ${table}(${col1}, ${col2}) VALUES( '${name}', '${pass}' );`
     await setUsers(query);
     res.sendStatus(200)
 
@@ -72,7 +76,7 @@ app.post('/api', async (req, res) => {
 // app.post('/api/bulk', async (req, res) => {
 //     const {name, pass} = req.body;
 
-//     query = `INSERT INTO usertable(name, pass) VALUES( '${name}', '${pass}' )`
+//     query = `INSERT INTO ${table}(${col1}, ${col2}) VALUES( '${name}', '${pass}' )`
 //     await pool.query(query);
 //     res.sendStatus(200)
 
@@ -83,9 +87,9 @@ app.put('/api/:id', async (req, res) => {
     const id = req.params.id;
     const {name, pass} = req.body;
 
-    query = `UPDATE usertable 
-            SET name='${name}',pass='${pass}' 
-            WHERE id=${id};`
+    query = `UPDATE ${table} 
+            SET ${col1}='${name}',${col2}='${pass}' 
+            WHERE ${col_unique}=${id};`
     await setUsers(query);
     res.sendStatus(200)
 
@@ -95,9 +99,9 @@ app.put('/api/:id', async (req, res) => {
 //     const id = req.params.id;
 //     const {name, pass} = req.body;
 
-//     query = `UPDATE usertable 
-//             SET name='${name}',pass='${pass}' 
-//             WHERE id=${id};`
+//     query = `UPDATE ${table} 
+//             SET ${col1}='${name}',${col2}='${pass}' 
+//             WHERE ${col_unique}=${id};`
 //     await pool.query(query);
 //     res.sendStatus(200)
 
@@ -107,7 +111,7 @@ app.put('/api/:id', async (req, res) => {
 app.delete('/api/:id', async (req, res) => {
     const id = req.params.id;
     
-    query = `DELETE FROM usertable WHERE id = ${id};`
+    query = `DELETE FROM ${table} WHERE ${col_unique} = ${id};`
     await setUsers(query);
     res.sendStatus(200)
 
